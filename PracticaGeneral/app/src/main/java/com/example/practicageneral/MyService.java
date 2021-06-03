@@ -12,7 +12,6 @@ public class MyService extends Service {
     /*este metodo es llamado cuando se inicial el servicio, si no hay bind, retorna null*/
     @Override
     public IBinder onBind(Intent intent) {
-
         //sin bind
         return null;
     }

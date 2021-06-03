@@ -3,9 +3,12 @@ package com.example.practicageneral;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -26,16 +29,38 @@ public class MainActivity extends AppCompatActivity {
         //cargo el layout
         setContentView(R.layout.activity_main);
 
-        /*modificar textView con un string de R*/
-        TextView msgTextView = (TextView) findViewById(R.id.mensaje1);
-        msgTextView.setText(R.string.hello);
+        //modificar textView con un string de R
+        //TextView msgTextView = (TextView) findViewById(R.id.mensaje1);
+        //msgTextView.setText(R.string.saludo);
 
         //Log.d(stateTag, "The onCrate() event");
 
+
+    }
+
+    /** Mostrar estado de bateria en %*/
+    public void mostrarEstadoBateria(View view){
+
+
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = getApplicationContext().registerReceiver(null, ifilter);
+
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        float batteryPct = level * 100 / (float) scale;
+
+        //TextView msgTextView = findViewById(R.id.mensaje1);
+        //msgTextView.setText("La bateria esta en " + batteryPct + "%");
+
+        Toast.makeText(getApplicationContext(), "la bateria esta en " + batteryPct + "%", Toast.LENGTH_LONG).show();
+        //Context context = getApplicationContext();
+        //CharSequence text = "La bateria esta en " + batteryPct + "%";
+        //int duration = Toast.LENGTH_SHORT;
+        //Toast toast = Toast.makeText(context, text, duration);
+        //toast.show();
     }
 
     public void startService(View view) {
-
         //servicio sin bind
         startService(new Intent(getBaseContext(), MyService.class));
     }
@@ -56,41 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
     /** Uso de contentProvider, en este caso una BD SQLite */
 
-    public void onClickAddName(View view) {
-
-        // Add a new student record
-        ContentValues values = new ContentValues();
-        values.put(StudentsProvider.NAME,
-                ((EditText)findViewById(R.id.editText2)).getText().toString());
-
-        values.put(StudentsProvider.GRADE,
-                ((EditText)findViewById(R.id.editText)).getText().toString());
-
-        Uri uri = getContentResolver().insert(
-                StudentsProvider.CONTENT_URI, values);
-
-        Toast.makeText(getBaseContext(),
-                uri.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    public void onClickRetrieveStudents(View view) {
-
-        // Retrieve student records
-        String URL = "content://com.example.practicageneral.StudentsProvider";
-
-        Uri students = Uri.parse(URL);
-        Cursor c = managedQuery(students, null, null, null, "name");
-
-        if (c.moveToFirst()) {
-            do{
-                Toast.makeText(this,
-                        c.getString(c.getColumnIndex(StudentsProvider._ID)) +
-                                ", " +  c.getString(c.getColumnIndex( StudentsProvider.NAME)) +
-                                ", " + c.getString(c.getColumnIndex( StudentsProvider.GRADE)),
-                        Toast.LENGTH_SHORT).show();
-            } while (c.moveToNext());
-        }
-    }
 
 /** -------------------------------------------------------------------------------------*/
 
@@ -106,6 +96,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(stateTag, "The onResume() event");
+
+        Context context = getApplicationContext();
+        CharSequence text = "La bateria esta en %";
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     /** Called when another activity is taking focus. */

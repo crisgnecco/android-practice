@@ -2,5 +2,5 @@
     <string name="app_name">PracticaGeneral</string>
 
     <color name="opaque_red">#f00</color>
-    <string name="hello">mensaje 2</string>
+    <string name="saludo">Buen dia!!!</string>
 </resources>
